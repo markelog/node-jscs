@@ -1231,14 +1231,18 @@ var x = [1];
 
 Requires space after opening round bracket and before closing.
 
-Type: `String`
+Type: `Object` or `String`
 
-Values: `"all"` for strict mode, `"allButNested"` ignores nested brackets in a row.
+Values: `"all"` for strict mode, `"allButNested"` ignores nested brackets in a row,
+you could also specify token exceptions.
 
 #### Example
 
 ```js
-"requireSpacesInsideParentheses": "all"
+"requireSpacesInsideParentheses": {
+    "all": true,
+    "except": [ "{", "}" ]
+}
 ```
 
 ##### Valid for mode `"all"`
@@ -1251,6 +1255,12 @@ var x = Math.pow( ( 1 + 2 ), ( 3 + 4 ) );
 
 ```js
 var x = Math.pow(( 1 + 2 ), ( 3 + 4 ));
+```
+
+##### Valid for mode `"all"` with `except`
+
+```js
+var x = Math.pow( foo({ test: 1 }) );
 ```
 
 ##### Invalid
