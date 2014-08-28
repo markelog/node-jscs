@@ -100,48 +100,97 @@ describe('rules/require-spaces-inside-parentheses', function() {
                 });
             });
 
-            it('should allow no space between function keyword and curly brace', function() {
-                assert(checker.checkString('foo(function() {});').isEmpty());
+            describe('functionExpression', function() {
+                it('should allow no space between function keyword and curly brace', function() {
+                    assert(checker.checkString('foo(function() {});').isEmpty());
+                });
+
+                it('should allow no space between function keyword and first argument', function() {
+                    assert(checker.checkString('foo( test, function() {})').isEmpty());
+                    assert(checker.checkString('foo(test, function() {})').getErrorCount() === 1);
+                });
+
+                it('should allow no space between function keyword and second argument', function() {
+                    assert(checker.checkString('foo(function() {}, test )').isEmpty());
+                    assert(checker.checkString('foo(function() {}, test)').getErrorCount() === 1);
+                });
+
+                it('should allow no space between function keyword and first object argument', function() {
+                    assert(checker.checkString('foo( test, {})').isEmpty());
+                    assert(checker.checkString('foo(test, {})').getErrorCount() === 1);
+                });
+
+                it('should allow no space between function keyword and first array argument', function() {
+                    assert(checker.checkString('foo( test, [])').isEmpty());
+                    assert(checker.checkString('foo(test, [])').getErrorCount() === 1);
+                });
+
+                it('should not report if function is the sole argument', function() {
+                    assert(checker.checkString('foo(function() {})').isEmpty());
+                });
+
+                it('should not report if object is the sole argument', function() {
+                    assert(checker.checkString('foo({})').isEmpty());
+                });
+
+                it('should not report if array is the sole argument', function() {
+                    assert(checker.checkString('foo([])').isEmpty());
+                });
+
+                it('should not report if object is the sole argument', function() {
+                    assert(checker.checkString('foo({})').isEmpty());
+                });
+
+                it('should not report if there is object two argument', function() {
+                    assert(checker.checkString('foo({}, {})').isEmpty());
+                });
+
+                it('should not report if there is array two argument', function() {
+                    assert(checker.checkString('foo([], [])').isEmpty());
+                });
+
+                it('should not report if object as last argument', function() {
+                    assert(checker.checkString('foo( test, {})').isEmpty());
+                });
+
+                it('should not report if object as first argument', function() {
+                    assert(checker.checkString('foo({}, test )').isEmpty());
+                    assert(checker.checkString('foo({}, test)').getErrorCount() === 1);
+                });
+
+                it('should not report if object as last argument', function() {
+                    assert(checker.checkString('foo( test, {})').isEmpty());
+                    assert(checker.checkString('foo(test, {})').getErrorCount() === 1);
+                });
+
+                it('should not report if array as first argument', function() {
+                    assert(checker.checkString('foo([], test )').isEmpty());
+                    assert(checker.checkString('foo([], test)').getErrorCount() === 1);
+                });
+
+                it('should not report if array as last argument', function() {
+                    assert(checker.checkString('foo( test, [] )').isEmpty());
+                    assert(checker.checkString('foo(test, {} )').getErrorCount() === 1);
+                });
             });
 
-            it('should allow no space between function keyword and first argument', function() {
-                assert(checker.checkString('foo( test, function() {})').isEmpty());
-                assert(checker.checkString('foo(test, function() {})').getErrorCount() === 1);
-            });
-
-            it('should allow no space between function keyword and second argument', function() {
-                assert(checker.checkString('foo(function() {}, test )').isEmpty());
-                assert(checker.checkString('foo(function() {}, test)').getErrorCount() === 1);
-            });
-
-            it('should allow no space between function keyword and first object argument', function() {
-                assert(checker.checkString('foo( test, {})').isEmpty());
-                assert(checker.checkString('foo(test, {})').getErrorCount() === 1);
-            });
-
-            it('should allow no space between function keyword and first array argument', function() {
-                assert(checker.checkString('foo( test, [])').isEmpty());
-                assert(checker.checkString('foo(test, [])').getErrorCount() === 1);
-            });
-
-            it('should not report if function is the sole argument', function() {
-                assert(checker.checkString('foo(function() {})').isEmpty());
-            });
-
-            it('should not report if object is the sole argument', function() {
-                assert(checker.checkString('foo({})').isEmpty());
-            });
-
-            it('should not report if array is the sole argument', function() {
-                assert(checker.checkString('foo([])').isEmpty());
-            });
-
-            it('should not report if object is the sole argument', function() {
-                assert(checker.checkString('foo({})').isEmpty());
-            });
-
-            it('should not report if object is not the sole argument', function() {
-                assert(checker.checkString('foo( test, {} )').isEmpty());
+            describe('cycles:"for", "for..of", "while", "do..while"', function() {
+                it('should report spacing problem for "for"', function() {
+                    assert(checker.checkString('for(var i = 0; i < l; i++) {}').getErrorCount() === 2);
+                    assert(checker.checkString('for( var i = 0; i < l; i++ ) {}').isEmpty());
+                });
+                it('should report spacing problem for "for..of"', function() {
+                    assert(checker.checkString('for(var i in a) {};').getErrorCount() === 2);
+                    assert(checker.checkString('for( var i in a ) {}').isEmpty());
+                });
+                it('should report spacing problem for "while"', function() {
+                    assert(checker.checkString('while(condition) {}').getErrorCount() === 2);
+                    assert(checker.checkString('while( condition ) {}').isEmpty());
+                });
+                it('should report spacing problem for "do..while"', function() {
+                    assert(checker.checkString('do{} while(condition);').getErrorCount() === 2);
+                    assert(checker.checkString('do{} while( condition );').isEmpty());
+                });
             });
         });
 
