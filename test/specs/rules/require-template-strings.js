@@ -29,4 +29,31 @@ describe('rules/require-template-strings', function() {
     it('should not report the use of template strings', function() {
         assert(checker.checkString('`How are you, ${name}?`').isEmpty());
     });
+
+    it('should report the use of string concatenation with right handed binary expression',
+        function() {
+            assert(checker.checkString('"test" + (a + b)').getErrorCount() === 1);
+        }
+    );
+
+    it('should report the use of string concatenation with left handed binary expression',
+        function() {
+            assert(checker.checkString('(a + b) + "test"').getErrorCount() === 1);
+        }
+    );
+
+    it('should not report for number literals', function() {
+        assert(checker.checkString('1 + a').isEmpty());
+        assert(checker.checkString('a + 1').isEmpty());
+    });
+
+    it('should not report for null literal', function() {
+        assert(checker.checkString('null + a').isEmpty());
+        assert(checker.checkString('a + null').isEmpty());
+    });
+
+    it('should not report for true literal', function() {
+        assert(checker.checkString('true + a').isEmpty());
+        assert(checker.checkString('a + false').isEmpty());
+    });
 });
