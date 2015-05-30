@@ -90,7 +90,7 @@ describe('modules/config/node-configuration', function() {
     });
 
     describe('load', function() {
-        it('should load existed preset', function() {
+        it('should load existing preset', function() {
             configuration.registerDefaultRules();
             configuration.registerPreset('test', {
                 disallowMultipleVarDecl: 'exceptUndefined'
@@ -107,14 +107,14 @@ describe('modules/config/node-configuration', function() {
                 preset: path.resolve(__dirname + '/../../../presets/jquery.json')
             });
 
-            var exist = false
+            var exist = false;
             configuration.getRegisteredRules().forEach(function(rule) {
                 if (exist) {
                     return;
                 }
 
                 exist = rule.getOptionName() === 'requireCurlyBraces';
-            })
+            });
 
             assert(exist);
             assert.equal(configuration.getPresetName(), 'jquery');
